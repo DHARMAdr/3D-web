@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Portal - Spider Cursor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 1]  MAIN CANVAS — Spider cursor animation
+         ────────────────────────────────────────────────────────────────
+         WHY: Canvas element renders the spider animation using JavaScript.
+              Fills the entire viewport for an immersive experience.
+         CAN IMPROVE:
+           • Add fullscreen mode toggle
+           • Add particle effects on click
+           • Add mobile touch controls for spider movement
+    ════════════════════════════════════════════════════════════════ -->
+    <canvas id="canvas"></canvas>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 2]  PROFILE ICON — Fixed corner button
+         ────────────────────────────────────────────────────────────────
+         WHY: Floating profile icon in the top-right corner.
+              Visible on all pages as a persistent navigation element.
+         CAN IMPROVE:
+           • Add a dropdown menu with links
+           • Add profile information tooltip on hover
+    ════════════════════════════════════════════════════════════════ -->
+    <button class="profile-icon" id="profileBtn" title="View Profile">
+        👤
+    </button>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 3]  DOWN ARROW INDICATOR — Shows navigation progress
+         ────────────────────────────────────────────────────────────────
+         WHY: Visual feedback showing how many down arrow clicks needed.
+              Each page shows a counter (0/3, then 0/3 again).
+         CAN IMPROVE:
+           • Add animation when counter resets
+           • Add keyboard hints ("Press ↓ to continue")
+           • Add progress bar instead of text counter
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="down-arrow-counter">
+        <span id="arrowCount">↓ 0/3</span>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 4]  PROFILE MODAL — Bio card popup
+         ────────────────────────────────────────────────────────────────
+         WHY: Shows when profile icon is clicked.
+              Contains bio, social links, and navigation info.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProfileModal()">×</button>
+            <div class="modal-title">🖤 Gamer 🖤</div>
+            <div class="modal-bio">
+                Reality is just my loading screen 🤖🎮<br><br>
+                <strong>Fueled by caffeine, collecting epic moments</strong><br><br>
+                This is <strong>iamlazydanger</strong><br>
+                100% pure entertainment<br><br>
+                Use ↓ arrow key to explore the portal
+            </div>
+            <div class="modal-links">
+                <a href="https://www.twitch.tv/iamlazydanger" target="_blank" class="modal-link">🟣 Twitch</a>
+                <a href="https://www.youtube.com/@iamlazydanger" target="_blank" class="modal-link">🔴 YouTube</a>
+                <a href="https://www.instagram.com/iamlazydanger" target="_blank" class="modal-link">📸 Instagram</a>
+                <a href="https://kick.com/iamlazydanger" target="_blank" class="modal-link">💜 Kick</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         SCRIPTS — Link to JavaScript files
+         ────────────────────────────────────────────────────────────────
+         WHY: Multiple script files keep code organized by feature:
+              • script.js = Spider animation logic
+              • nav.js = Navigation and page transitions
+    ════════════════════════════════════════════════════════════════ -->
+    <script src="script.js"></script>
+    <script src="nav.js"></script>
+
+</body>
+</html>

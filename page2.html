@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Portal - Galaxy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 1]  3D CANVAS — THREE.js Galaxy Visualization
+         ────────────────────────────────────────────────────────────────
+         WHY: Container for THREE.js WebGL rendering.
+              Displays an interactive 3D galaxy made of particles.
+         CAN IMPROVE:
+           • Add mouse controls to rotate the galaxy
+           • Add zoom in/out on scroll
+           • Add real star data from NASA API
+           • Add collision detection with particles
+    ════════════════════════════════════════════════════════════════ -->
+    <div id="galaxy-container"></div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 2]  PROFILE ICON — Fixed corner button
+         ────────────────────────────────────────────────────────────────
+         WHY: Persistent navigation element visible on all pages.
+    ════════════════════════════════════════════════════════════════ -->
+    <button class="profile-icon" id="profileBtn" title="View Profile">
+        👤
+    </button>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 3]  DOWN ARROW COUNTER — Navigation progress (page 2/3)
+         ────────────────────────────────────────────────────────────────
+         WHY: Shows visitor is on page 2 and needs 3 more down arrow clicks.
+              Resets counter to 0/3 when on this page.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="down-arrow-counter">
+        <span id="arrowCount">↓ 0/3</span>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 4]  PAGE INFO — Instructions for this page
+         ────────────────────────────────────────────────────────────────
+         WHY: Tells visitor what they're looking at and how to proceed.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="page-info">
+        <h2>🌌 The Galaxy Portal</h2>
+        <p>Press ↓ 3 times to unlock the next dimension...</p>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 5]  PROFILE MODAL
+         ────────────────────────────────────────────────────────────────
+         WHY: Shows when profile icon is clicked. Same on all pages.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProfileModal()">×</button>
+            <div class="modal-title">🖤 Gamer 🖤</div>
+            <div class="modal-bio">
+                <strong>Currently exploring: The Galaxy Portal 🌌</strong><br><br>
+                Page 2 of 3<br>
+                Press ↓ 3 times to continue...
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         THREE.JS LIBRARY — WebGL 3D rendering
+         ────────────────────────────────────────────────────────────────
+         WHY: Loads THREE.js from CDN so we can use:
+              • BufferGeometry — efficient 3D geometry
+              • PointsMaterial — particles/stars
+              • WebGLRenderer — GPU-accelerated rendering
+    ════════════════════════════════════════════════════════════════ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         SCRIPTS
+         ────────────────────────────────────────────────────────────────
+         WHY: Two separate files:
+              • page2-galaxy.js = Galaxy/particle animation
+              • nav.js = Navigation logic (same on all pages)
+    ════════════════════════════════════════════════════════════════ -->
+    <script src="page2-galaxy.js"></script>
+    <script src="nav.js"></script>
+
+</body>
+</html>

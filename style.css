@@ -1,0 +1,329 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   STYLE.CSS — Shared styles for all pages of the Interactive Portal
+   ════════════════════════════════════════════════════════════════════════════
+   
+   WHY: One CSS file for all three pages reduces duplication.
+        Page-specific overrides are in each HTML file's <style> tag.
+   CAN IMPROVE:
+     • Use CSS custom properties (variables) for colours across all pages
+     • Add animations (@keyframes) for smoother transitions
+     • Use CSS Grid for responsive layouts
+════════════════════════════════════════════════════════════════════════════ */
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 1]  GLOBAL RESET & BODY
+   ────────────────────────────────────────────────────────────────
+   WHY: Removes browser defaults and sets up the canvas to fill viewport.
+   CAN IMPROVE:
+     • Add smooth scroll behavior
+     • Add system font stack for better rendering
+════════════════════════════════════════════════════════════════ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    margin: 0;
+    background: #000;
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 2]  CANVAS — Full viewport animation display
+   ────────────────────────────────────────────────────────────────
+   WHY: Canvas fills the entire viewport and is the main visual element.
+        display: block removes inline spacing.
+   CAN IMPROVE:
+     • Add touch-action: none for better mobile support
+     • Add cursor: none to hide default cursor during animation
+════════════════════════════════════════════════════════════════ */
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
+
+#galaxy-container {
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 3]  PROFILE ICON — Fixed corner button
+   ────────────────────────────────────────────────────────────────
+   WHY: Position fixed keeps it in the same corner on all pages.
+        Small circular button for quick access to profile/bio.
+   CAN IMPROVE:
+     • Add hover animation (scale, glow effect)
+     • Add badge counter (unread messages, notifications)
+     • Add tooltip on hover
+════════════════════════════════════════════════════════════════ */
+.profile-icon {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.profile-icon:active {
+    transform: scale(0.95);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 4]  DOWN ARROW COUNTER — Navigation progress indicator
+   ────────────────────────────────────────────────────────────────
+   WHY: Shows how many down arrow clicks until next page transition.
+   CAN IMPROVE:
+     • Add progress bar animation
+     • Add color change as counter increases
+     • Add sound effect when counter resets
+════════════════════════════════════════════════════════════════ */
+.down-arrow-counter {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #fff;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.down-arrow-counter:hover {
+    opacity: 1;
+}
+
+#arrowCount {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 5]  PAGE INFO — Page title and instructions
+   ────────────────────────────────────────────────────────────────
+   WHY: Shows what page visitor is on and instructions for proceeding.
+   CAN IMPROVE:
+     • Add typewriter animation on first load
+     • Add fade-in/out transitions
+════════════════════════════════════════════════════════════════ */
+.page-info {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.page-info h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.page-info p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.page3-info {
+    color: rgba(139, 0, 0, 0.6);
+    text-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+}
+
+.page3-counter {
+    color: #8B0000;
+    border-color: rgba(139, 0, 0, 0.5);
+}
+
+.page3-counter #arrowCount {
+    border-color: rgba(139, 0, 0, 0.3);
+    color: #8B0000;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 6]  MODAL — Profile popup (all pages)
+   ────────────────────────────────────────────────────────────────
+   WHY: Shows bio and profile when profile icon is clicked.
+        Position fixed overlay covers the entire viewport.
+   CAN IMPROVE:
+     • Add animation on open/close
+     • Add keyboard shortcut to close (Escape)
+════════════════════════════════════════════════════════════════ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: rgba(20, 20, 20, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    float: right;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #00D9FF;
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    color: #fff;
+    margin: 1rem 0;
+    clear: both;
+}
+
+.modal-bio {
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 1.5rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.modal-links {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.modal-link {
+    display: inline-block;
+    padding: 0.8rem 1.2rem;
+    background: rgba(157, 78, 221, 0.3);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(157, 78, 221, 0.5);
+}
+
+.modal-link:hover {
+    background: rgba(157, 78, 221, 0.6);
+    border-color: rgba(157, 78, 221, 0.8);
+    transform: translateX(5px);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 7]  RESPONSIVE DESIGN — Mobile overrides
+   ────────────────────────────────────────────────────────────────
+   WHY: Adjusts layout for smaller screens.
+   CAN IMPROVE:
+     • Add tablet-specific adjustments at 768px
+     • Add landscape orientation handling
+════════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .page-info h2 {
+        font-size: 1.8rem;
+    }
+
+    .page-info p {
+        font-size: 0.95rem;
+    }
+
+    .down-arrow-counter {
+        bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+    }
+}

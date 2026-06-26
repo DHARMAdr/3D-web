@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Portal - Spider Clock</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ════════════════════════════════════════════════════════════════
+           PAGE 3 SPECIFIC STYLES — Blood Red Spider Clock
+           ────────────────────────────────────────────────────────────────
+           WHY: Page 3 overrides the default canvas colors for a dark,
+                blood-soaked aesthetic. Uses Vantablack (#0a0a0a) background
+                and blood red (#8B0000) spider lines.
+           CAN IMPROVE:
+             • Add pulsing glow effect on spider web
+             • Add animated clock hands
+             • Add blood drip animation
+        ════════════════════════════════════════════════════════════════ */
+        #canvas {
+            background-color: #0a0a0a;  /* Vantablack — almost no light reflection */
+        }
+
+        .clock-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #8B0000;
+            font-family: 'Arial', sans-serif;
+            pointer-events: none;
+        }
+
+        .clock-time {
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(139, 0, 0, 0.8);
+            letter-spacing: 3px;
+        }
+
+        .clock-label {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 1]  CANVAS — Spider Clock Animation
+         ────────────────────────────────────────────────────────────────
+         WHY: Same spider cursor animation as page 1, but styled with:
+              • Vantablack background (#0a0a0a)
+              • Blood red spider lines (#8B0000)
+              • Clock display in the center showing current time
+         CAN IMPROVE:
+           • Add animated clock hands
+           • Add real time display
+           • Add tick sounds when seconds change
+    ════════════════════════════════════════════════════════════════ -->
+    <canvas id="canvas"></canvas>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 2]  CLOCK DISPLAY — Center of the page
+         ────────────────────────────────────────────────────────────────
+         WHY: Shows the current time in the center of the screen.
+              Styled with blood red glow effect.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="clock-container">
+        <div class="clock-time" id="clockDisplay">00:00:00</div>
+        <div class="clock-label">🕷️ Blood Clock 🕷️</div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 3]  PROFILE ICON
+    ════════════════════════════════════════════════════════════════ -->
+    <button class="profile-icon" id="profileBtn" title="View Profile">
+        👤
+    </button>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 4]  DOWN ARROW COUNTER — This is the final page
+         ────────────────────────────────────────────────────────────────
+         WHY: Shows you're on page 3 of the portal.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="down-arrow-counter page3-counter">
+        <span id="arrowCount">🕷️ 3/3 🕷️</span>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 5]  PAGE INFO — Instructions for the final page
+         ────────────────────────────────────────────────────────────────
+         WHY: Tells visitor they've reached the final page.
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="page-info page3-info">
+        <h2>🕷️ The Blood Clock 🕷️</h2>
+        <p>You have reached the final dimension...<br>
+           The spider weaves time itself.</p>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 6]  PROFILE MODAL
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProfileModal()">×</button>
+            <div class="modal-title">🖤 Gamer 🖤</div>
+            <div class="modal-bio">
+                <strong>You've unlocked: The Blood Clock 🕷️</strong><br><br>
+                Page 3 of 3 — The Final Dimension<br>
+                Time flows through the spider's web...<br><br>
+                <a href="index.html" style="color: #fff; text-decoration: underline;">← Return to start</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         SCRIPTS
+         ────────────────────────────────────────────────────────────────
+         WHY: Two files:
+              • page3-clock.js = Spider animation with blood red color & clock
+              • nav.js = Navigation logic
+    ════════════════════════════════════════════════════════════════ -->
+    <script src="page3-clock.js"></script>
+    <script src="nav.js"></script>
+
+</body>
+</html>
