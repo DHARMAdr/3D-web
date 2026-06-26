@@ -39,11 +39,15 @@
             letter-spacing: 3px;
         }
 
-        .clock-label {
-            font-size: 1.2rem;
-            margin-top: 3rem;
-            opacity: 0.5;
-        }
+   .clock-label {
+    font-size: 1.2rem;
+    position: absolute;
+    top: -40px; /* 👈 This pushes the text completely ABOVE the numbers */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    opacity: 0.8;
+}
     </style>
 </head>
 <body>
