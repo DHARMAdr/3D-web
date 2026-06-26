@@ -131,9 +131,8 @@ function updateArrowCounter() {
 ================================ ============================ */
 function advancePage() {
     /* Check if there's a next page */
-    if (currentPage < pages.length) {
-        /* Get the next page URL */
-        const nextPageUrl = pages[currentPage];
+    if (currentPage < pageSequence.length) { 
+        const nextPageUrl = pageSequence[currentPage];
         
         /* Reset counter for new page */
         arrowClicks = 0;
@@ -150,10 +149,9 @@ function advancePage() {
     } else {
         /* Already on final page — loop back to start */
         alert('🕷️ You have completed the portal! Returning to start...');
-        window.location.href = pages[0];
+        window.location.href = pageSequence[0]; 
     }
 }
-
 
 /* ════════════════════════════════════════════════════════════════
    [JS 5]  PROFILE MODAL TOGGLE — Show/hide on icon click
