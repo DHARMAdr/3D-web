@@ -1,0 +1,1487 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Lazy Danger - Gaming Blog</title>
+
+    <!--
+    ╔══════════════════════════════════════════════════════════════════╗
+    ║  FILE OVERVIEW — index.html                                      ║
+    ║  Site: @iamlazydanger Gaming Blog                                ║
+    ╠══════════════════════════════════════════════════════════════════╣
+    ║  SECTIONS IN THIS FILE (in order)                                ║
+    ║  ─────────────────────────────────────────────────────────────── ║
+    ║  [CSS]                                                           ║
+    ║   1. CSS VARIABLES (colour palette & spacing tokens)             ║
+    ║   2. BASE RESET & BODY (global defaults)                         ║
+    ║   3. HEADER & NAVIGATION (sticky top bar)                        ║
+    ║   4. PROFILE ICON BUTTON (avatar circle in header)               ║
+    ║   5. MAIN LAYOUT (page wrapper & spacing)                        ║
+    ║   6. FEATURED POST CARD (hero banner)                            ║
+    ║   7. CATEGORY FILTER BUTTONS (All / Review / Guide…)             ║
+    ║   8. BLOG CARD GRID (post thumbnail cards)                       ║
+    ║   9. FOOTER                                                      ║
+    ║  10. BIO MODAL (surprise info popup — original feature)          ║
+    ║  11. PROFILE MODAL (7:14 tall popup with social links)           ║
+    ║  12. CHAT WIDGET (floating message bubble + box)                 ║
+    ║  13. RESPONSIVE / MOBILE OVERRIDES                               ║
+    ║  [HTML]                                                          ║
+    ║  14. HEADER HTML (logo, search bar, profile icon)                ║
+    ║  15. MAIN HTML (featured section + blog grid)                    ║
+    ║  16. FOOTER HTML                                                 ║
+    ║  17. CHAT BUBBLE BUTTON HTML                                     ║
+    ║  18. CHAT MESSAGE BOX HTML                                       ║
+    ║  19. BIO MODAL HTML (surprise info)                              ║
+    ║  20. PROFILE MODAL HTML (7:14 card)                              ║
+    ║  [JavaScript]                                                    ║
+    ║  21. IMAGE LINKS CONFIG (paste your URLs here)                   ║
+    ║  22. BLOG POST DATA (add / edit posts here)                      ║
+    ║  23. CATEGORY LIST (controls filter buttons)                     ║
+    ║  24. getCategoryImage() helper                                   ║
+    ║  25. applyProfilePictures() — syncs profile pic everywhere       ║
+    ║  26. showFeatured() — renders the hero banner                    ║
+    ║  27. showFilters() — renders filter buttons                      ║
+    ║  28. showPosts() — renders the blog card grid                    ║
+    ║  29. start() — page boot, wires up search listener               ║
+    ║  30. BIO MODAL functions (show / close)                          ║
+    ║  31. PROFILE MODAL functions (show / close)                      ║
+    ║  32. CHAT WIDGET functions (toggle, char count, send)            ║
+    ║  33. BACKDROP CLICK — closes any open modal                      ║
+    ╚══════════════════════════════════════════════════════════════════╝
+    -->
+
+    <style>
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 1]  CSS VARIABLES — Colour palette & design tokens
+           ────────────────────────────────────────────────────────────
+           WHY: Keeps every colour in one place so you only need to
+                change a value here to update it across the whole site.
+           USE: Reference with  var(--name)  anywhere in the CSS.
+           CAN IMPROVE:
+             • Add --accent-green or --accent-gold for new badge types
+             • Add --font-main / --font-display to centralise fonts
+             • Add --radius-card to make border-radius consistent
+        ════════════════════════════════════════════════════════════ */
+        :root {
+            --bg-dark:        #0F0F0F;   /* page background              */
+            --bg-card:        #1A1A1A;   /* card / panel background      */
+            --accent-purple:  #9D4EDD;   /* primary brand colour         */
+            --accent-blue:    #3A86FF;   /* links, active states         */
+            --accent-cyan:    #00D9FF;   /* hover highlights             */
+            --text-primary:   #F5F5F5;   /* headings & body text         */
+            --text-secondary: #A0A0A0;   /* captions, meta info          */
+            --border-color:   #2A2A2A;   /* card borders & dividers      */
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 2]  BASE RESET & BODY
+           ────────────────────────────────────────────────────────────
+           WHY: Removes browser default margin/padding so every element
+                starts from zero — prevents unexpected gaps.
+                Body sets the dark background, readable font & line height.
+           CAN IMPROVE:
+             • Swap Arial for a Google Font (e.g. "Inter") for a sharper look
+             • Add  scroll-behavior: smooth  to the html element for
+               smooth anchor scrolling
+        ════════════════════════════════════════════════════════════ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 3]  HEADER & NAVIGATION — sticky top bar
+           ────────────────────────────────────────────────────────────
+           WHY: position:sticky keeps the bar visible as the user scrolls.
+                z-index:100 puts it above all page content.
+                The subtle purple gradient ties it to the brand colour.
+           CAN IMPROVE:
+             • Add a nav menu with links (Reviews, Guides, Tips, Hardware)
+             • Add a dark/light mode toggle button
+             • Add a notification bell icon for new posts
+        ════════════════════════════════════════════════════════════ */
+        header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, rgba(157, 78, 221, 0.05) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;    /* stacks on mobile */
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+        }
+
+        /* Search bar inside the header */
+        .search-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 12px rgba(58, 134, 255, 0.3);
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 4]  PROFILE ICON BUTTON — circular avatar in header
+           ────────────────────────────────────────────────────────────
+           WHY: Gives visitors a quick visual anchor to click for your
+                full bio & social links. Shows your profile picture or
+                a fallback emoji if the image hasn't been set yet.
+           CAN IMPROVE:
+             • Add a pulsing ring animation to draw attention
+             • Show a small online/live badge dot when you're streaming
+             • Replace the emoji fallback with initials inside a coloured circle
+        ════════════════════════════════════════════════════════════ */
+        .profile-icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-purple);
+            overflow: hidden;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .profile-icon-btn:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 12px rgba(0, 217, 255, 0.4);
+        }
+
+        .profile-icon-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-icon-btn .profile-placeholder {
+            font-size: 1.4rem;
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 5]  MAIN LAYOUT — page content wrapper
+           ────────────────────────────────────────────────────────────
+           WHY: max-width 1200px centres the content on large screens.
+                padding keeps content away from screen edges on mobile.
+           CAN IMPROVE:
+             • Add a sidebar layout (2/3 content + 1/3 sidebar) for wider screens
+             • Add a "back to top" floating button that appears on scroll
+        ════════════════════════════════════════════════════════════ */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+        }
+
+        .featured-section {
+            margin-bottom: 4rem;
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 6]  FEATURED POST CARD — hero banner at the top
+           ────────────────────────────────────────────────────────────
+           WHY: Highlights the most important post with a large two-column
+                layout: text on the left, image/emoji on the right.
+                The purple tint gradient separates it from regular cards.
+           CAN IMPROVE:
+             • Add an animated background shimmer or video loop behind it
+             • Make the image slot a slideshow / carousel of recent posts
+             • Add a "views" or "likes" counter badge
+        ════════════════════════════════════════════════════════════ */
+        .featured-post {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(157, 78, 221, 0.1) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .featured-content h1  { font-size: 2rem;   margin-bottom: 1rem; }
+        .featured-content p   { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+        .featured-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* Purple label pill (e.g. "Guide") shown on the featured card */
+        .category-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background: rgba(157, 78, 221, 0.2);
+            color: var(--accent-purple);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 1px solid var(--accent-purple);
+        }
+
+        /* Right-side image/emoji box on the featured card */
+        .featured-image {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 7]  CATEGORY FILTER BUTTONS — All / Review / Guide / Tips / Hardware
+           ────────────────────────────────────────────────────────────
+           WHY: Lets visitors quickly narrow posts by topic.
+                .active highlights the currently selected category in blue.
+           CAN IMPROVE:
+             • Add post-count badges inside each button (e.g. "Reviews (3)")
+             • Turn these into icon+label tabs with a bottom-border indicator
+             • Add a smooth underline slide animation on .active
+        ════════════════════════════════════════════════════════════ */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover  { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        .filter-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: var(--bg-dark);
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 8]  BLOG CARD GRID — post thumbnail cards
+           ────────────────────────────────────────────────────────────
+           WHY: auto-fill grid means cards wrap naturally at any screen
+                width without needing breakpoints for every column count.
+                The lift + cyan border on hover makes cards feel interactive.
+           CAN IMPROVE:
+             • Add a "NEW" ribbon badge on cards posted within 7 days
+             • Add a like/bookmark icon in the card footer
+             • Make the card-image slot auto-rotate between 2–3 screenshots
+        ════════════════════════════════════════════════════════════ */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .blog-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .blog-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-4px);
+        }
+
+        /* Thumbnail at the top of each card.
+           Falls back to gradient + emoji if no image URL is set. */
+        .card-image {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content     { padding: 1.5rem; flex: 1; }
+
+        .card-category {
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .card-title       { font-size: 1.2rem; font-weight: bold; margin-bottom: 0.75rem; }
+        .card-description { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem; }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .read-more       { color: var(--accent-blue); font-weight: bold; text-decoration: none; cursor: pointer; }
+        .read-more:hover { color: var(--accent-cyan); }
+
+        /* Shown when no posts match the current search / filter */
+        .empty-state    { text-align: center; padding: 3rem 1rem; color: var(--text-secondary); }
+        .empty-state h2 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 9]  FOOTER
+           ────────────────────────────────────────────────────────────
+           WHY: Gives the page a clean closing bar with copyright info.
+           CAN IMPROVE:
+             • Add footer columns: Quick Links | Social | Newsletter signup
+             • Add a "Powered by ☕" credit or affiliate disclaimer
+        ════════════════════════════════════════════════════════════ */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 4rem;
+        }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 10]  BIO MODAL — "surprise info" popup (original feature)
+           ────────────────────────────────────────────────────────────
+           WHY: A centred overlay that shows your bio and social links
+                when the visitor clicks "surprise info →" on the featured post.
+                .modal.show switches display from none → flex to reveal it.
+           CAN IMPROVE:
+             • Add a fade-in / scale-up CSS animation on open
+             • Show a "Currently live on Twitch 🔴" live status badge
+             • Add a Discord invite button
+        ════════════════════════════════════════════════════════════ */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show { display: flex; }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--accent-purple);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(157, 78, 221, 0.3);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .modal-close:hover { color: var(--accent-cyan); }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--accent-purple);
+            margin: 1rem 0;
+            clear: both;
+        }
+
+        .modal-bio {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .modal-links {
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .modal-link {
+            display: inline-block;
+            padding: 0.8rem 1.2rem;
+            background: var(--accent-purple);
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-link:hover { background: var(--accent-cyan); transform: translateX(5px); }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 11]  PROFILE MODAL — tall 7:14 card popup
+           ────────────────────────────────────────────────────────────
+           WHY: Opens when the visitor clicks your profile icon in the
+                header. Designed as a tall phone-like card (7:14 ratio)
+                showing your photo, bio, and all social platform links.
+           CAN IMPROVE:
+             • Add a banner image behind the profile picture
+             • Add follower / subscriber counts pulled from an API
+             • Show latest stream title or YouTube video thumbnail
+        ════════════════════════════════════════════════════════════ */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            z-index: 1100;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-modal.show { display: flex; }
+
+        /* The tall card — width:height ratio kept close to 7:14 (1:2) */
+        .profile-modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-purple);
+            border-radius: 16px;
+            box-shadow: 0 0 60px rgba(157, 78, 221, 0.4);
+            width: min(360px, 90vw);
+            height: min(720px, 90vh);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.5rem 2.5rem;
+            position: relative;
+        }
+
+        .profile-modal-close {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+            cursor: pointer;
+            border: none;
+            background: none;
+            line-height: 1;
+        }
+
+        .profile-modal-close:hover { color: var(--accent-cyan); }
+
+        /* Circular profile picture inside the modal */
+        .profile-pic-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-purple);
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 1.2rem;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .profile-pic-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+        .profile-modal-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+            margin-bottom: 0.3rem;
+            text-align: center;
+        }
+
+        .profile-modal-tagline {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-modal-bio {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .profile-modal-links {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .profile-modal-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            background: var(--accent-purple);
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .profile-modal-link:hover { background: var(--accent-cyan); transform: translateY(-2px); }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 12]  CHAT WIDGET — floating message bubble & box
+           ────────────────────────────────────────────────────────────
+           WHY: Gives visitors a quick way to send you a message directly
+                from the site without needing a full contact page.
+                The bubble sits fixed in the bottom-right corner at all times.
+                .chat-box.open switches it from hidden to visible.
+           CAN IMPROVE:
+             • Add a bounce animation on the bubble to attract attention
+             • Show a reply / auto-response message after sending
+             • Add an emoji picker button inside the text box
+             • Add a "subject" dropdown (Collab? / Bug report? / Just saying hi)
+        ════════════════════════════════════════════════════════════ */
+
+        /* Purple floating circle button */
+        .chat-trigger {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 900;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(157, 78, 221, 0.5);
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-trigger:hover {
+            background: var(--accent-cyan);
+            transform: scale(1.1);
+            box-shadow: 0 4px 24px rgba(0, 217, 255, 0.5);
+        }
+
+        .chat-trigger svg { width: 26px; height: 26px; fill: #fff; }
+
+        /* The message box that opens above the bubble */
+        .chat-box {
+            position: fixed;
+            bottom: 6.5rem;
+            right: 2rem;
+            z-index: 900;
+            width: 320px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(157, 78, 221, 0.35);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-box.open { display: flex; }
+
+        /* Coloured header bar of the message box */
+        .chat-box-header {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+            padding: 0.9rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-box-header span { font-weight: bold; color: #fff; font-size: 0.95rem; }
+
+        .chat-box-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .chat-box-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+
+        /* Sender name + message textarea */
+        .chat-name-input,
+        .chat-textarea {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+            resize: none;
+        }
+
+        .chat-name-input:focus,
+        .chat-textarea:focus { outline: none; border-color: var(--accent-blue); }
+
+        .chat-textarea { height: 120px; }
+
+        /* Live character counter — turns red when at limit */
+        .chat-char-count      { font-size: 0.78rem; color: var(--text-secondary); text-align: right; margin-top: -0.4rem; }
+        .chat-char-count.over { color: #ff4d4d; }
+
+        /* Send button */
+        .chat-send-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--accent-purple);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-send-btn:hover    { background: var(--accent-cyan); color: var(--bg-dark); }
+        .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Success / error status line under the button */
+        .chat-status { font-size: 0.82rem; text-align: center; min-height: 1.2rem; color: var(--accent-cyan); }
+
+
+        /* ════════════════════════════════════════════════════════════
+           [CSS 13]  RESPONSIVE / MOBILE OVERRIDES
+           ────────────────────────────────────────────────────────────
+           WHY: At ≤768px the two-column layouts switch to single column
+                so everything stays readable on phones.
+           CAN IMPROVE:
+             • Add tablet breakpoint at 1024px for a 2-column card grid
+             • Collapse the filter buttons into a horizontal scroll strip
+             • Make the chat box full-width on very small screens
+        ════════════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .header-content           { flex-direction: column; gap: 1rem; }
+            .featured-post            { grid-template-columns: 1fr; }
+            .featured-content h1      { font-size: 1.5rem; }
+            .featured-image           { height: 200px; }
+            .blog-grid                { grid-template-columns: 1fr; }
+            .chat-box                 { width: calc(100vw - 2rem); right: 1rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 14]  HEADER — logo, search bar, profile icon
+     ────────────────────────────────────────────────────────────────
+     WHY: Sticky top bar that stays visible while scrolling.
+          Contains the site logo, a live search box that filters posts
+          as you type, and the circular profile icon.
+     CAN IMPROVE:
+       • Add a nav bar with anchor links (Reviews, Guides, About…)
+       • Replace the text logo with an SVG/image logo file
+       • Add a "🔴 LIVE" badge next to the logo when streaming
+════════════════════════════════════════════════════════════════ -->
+<header>
+    <div class="header-content">
+
+        <!-- Site logo / brand name -->
+        <div class="logo">@iamlazydanger</div>
+
+        <!-- Live search — filters blog cards as the visitor types -->
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search posts...">
+        </div>
+
+        <!-- Profile icon — click to open the full bio card (Profile Modal) -->
+        <!-- 🔧 REPLACE src WITH YOUR PROFILE PICTURE URL in IMAGE_LINKS below -->
+        <button class="profile-icon-btn" onclick="showProfileModal()" title="View Profile">
+            <img
+                id="headerProfileImg"
+                src="YOUR_PROFILE_PICTURE_URL_HERE"
+                alt="Profile"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            >
+            <span class="profile-placeholder" style="display:none;">🎮</span>
+        </button>
+
+    </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 15]  MAIN CONTENT — featured hero + filtered blog grid
+     ────────────────────────────────────────────────────────────────
+     WHY: These sections are empty containers — JavaScript fills them
+          dynamically using showFeatured(), showFilters(), showPosts().
+          This means adding a new post only requires editing the JS data.
+     CAN IMPROVE:
+       • Add a "Latest Videos" YouTube embed row below the blog grid
+       • Add a Twitch embed panel that shows your stream live
+       • Add a tag cloud or popular-posts sidebar
+════════════════════════════════════════════════════════════════ -->
+<main>
+
+    <!-- Hero / featured post — filled by showFeatured() -->
+    <section class="featured-section" id="featuredSection"></section>
+
+    <section>
+        <!-- Category filter buttons — filled by showFilters() -->
+        <div class="filters" id="filtersContainer"></div>
+
+        <!-- Blog post cards — filled by showPosts() -->
+        <div class="blog-grid" id="blogGrid"></div>
+
+        <!-- Shown when no posts match the current search or filter -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <h2>No posts found</h2>
+            <p>Try adjusting your search or filters</p>
+        </div>
+    </section>
+
+</main>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 16]  FOOTER
+     ────────────────────────────────────────────────────────────────
+     WHY: Simple copyright bar at the bottom of the page.
+     CAN IMPROVE:
+       • Add social icon links row
+       • Add a "Back to top ↑" anchor link
+       • Add a short affiliate / sponsorship disclaimer
+════════════════════════════════════════════════════════════════ -->
+<footer>
+    <p>&copy; 2026 Level Up Gaming Blog. Level up your game knowledge.</p>
+</footer>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 17]  CHAT BUBBLE BUTTON — fixed bottom-right floating icon
+     ────────────────────────────────────────────────────────────────
+     WHY: Always-visible button that opens and closes the message box.
+          Uses an inline SVG speech-bubble icon so no image file needed.
+     CAN IMPROVE:
+       • Add a red unread-count badge number over the bubble
+       • Swap the SVG for a custom icon that matches your brand
+════════════════════════════════════════════════════════════════ -->
+<button class="chat-trigger" id="chatTrigger" onclick="toggleChat()" title="Send a message">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+    </svg>
+</button>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 18]  CHAT MESSAGE BOX — opens above the bubble
+     ────────────────────────────────────────────────────────────────
+     WHY: Collects an optional sender name and a message (max 300 chars),
+          then emails it to dharmaraj.p2013@gmail.com via EmailJS.
+          The box is hidden by default; toggleChat() adds class "open".
+     CAN IMPROVE:
+       • Add a subject/topic dropdown
+       • Add a file attachment option (e.g. screenshot for bug reports)
+       • Add a honeypot field to block spam bots
+════════════════════════════════════════════════════════════════ -->
+<div class="chat-box" id="chatBox">
+    <div class="chat-box-header">
+        <span>💬 Message @iamlazydanger</span>
+        <button class="chat-box-close" onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-box-body">
+        <input type="text"  class="chat-name-input" id="chatName"    placeholder="Your name (optional)">
+        <textarea
+            class="chat-textarea"
+            id="chatMessage"
+            placeholder="Type your message… (max 300 characters)"
+            maxlength="300"
+            oninput="updateCharCount()"
+        ></textarea>
+        <div class="chat-char-count" id="charCount">0 / 300</div>
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">Send Message</button>
+        <div class="chat-status" id="chatStatus"></div>
+    </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 19]  BIO MODAL — "surprise info" popup (original feature)
+     ────────────────────────────────────────────────────────────────
+     WHY: Triggered by the "surprise info →" link on the featured card.
+          Shows your gamer bio and four social platform links.
+          Clicking outside the white box or pressing × closes it.
+     CAN IMPROVE:
+       • Add your latest Twitch clip or YouTube short as an embedded video
+       • Add a "Follow on Twitch" button that deep-links to your channel
+       • Display your current game / what you're playing badge
+════════════════════════════════════════════════════════════════ -->
+<div class="modal" id="bioModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeBioModal()">&times;</button>
+        <div class="modal-title">🖤 Gamer 🖤 Reality is just my loading screen 🤖🎮</div>
+        <div class="modal-bio">
+            <strong>Fueled by caffeine, collecting epic moments 😮‍💨</strong><br><br>
+            Still learning... :)<br><br>
+            This is <strong>iamlazydanger</strong>, and the goal is simple: <strong>100% pure entertainment</strong>.<br><br>
+            Buckle up, hit subscribe, and let's play some games!
+        </div>
+        <div class="modal-links">
+            <a href="https://www.twitch.tv/iamlazydanger"   target="_blank" class="modal-link">🟣 Twitch</a>
+            <a href="https://www.youtube.com/@iamlazydanger" target="_blank" class="modal-link">🔴 YouTube</a>
+            <a href="https://www.instagram.com/iamlazydanger" target="_blank" class="modal-link">📸 Instagram</a>
+            <a href="https://kick.com/iamlazydanger"         target="_blank" class="modal-link">💜 Kick</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     [HTML 20]  PROFILE MODAL — tall 7:14 bio card
+     ────────────────────────────────────────────────────────────────
+     WHY: Opens when the visitor clicks your profile icon in the header.
+          Styled as a tall phone-ratio card showing your profile picture,
+          name, tagline, full bio, and all social platform links.
+     CAN IMPROVE:
+       • Add a banner/header image at the very top of the card
+       • Add a "Currently playing: [game name]" status row
+       • Add a Discord join button as a fifth social link
+════════════════════════════════════════════════════════════════ -->
+<div class="profile-modal" id="profileModal">
+    <div class="profile-modal-content">
+
+        <button class="profile-modal-close" onclick="closeProfileModal()">×</button>
+
+        <!-- Profile picture — source set via IMAGE_LINKS.profilePicture in JS -->
+        <div class="profile-pic-wrapper">
+            <img
+                id="profileModalImg"
+                src="YOUR_PROFILE_PICTURE_URL_HERE"
+                alt="iamlazydanger"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+            >
+            <span style="display:none;">🎮</span>
+        </div>
+
+        <div class="profile-modal-name">@iamlazydanger</div>
+        <div class="profile-modal-tagline">🖤 Gamer 🖤 Reality is just my loading screen 🤖🎮</div>
+
+        <div class="profile-modal-bio">
+            <strong>Fueled by caffeine, collecting epic moments 😮‍💨</strong><br><br>
+            Still learning... :)<br><br>
+            This is <strong>iamlazydanger</strong>, and the goal is simple:<br>
+            <strong>100% pure entertainment.</strong><br><br>
+            Buckle up, hit subscribe, and let's play some games!
+        </div>
+
+        <div class="profile-modal-links">
+            <a href="https://www.twitch.tv/iamlazydanger"    target="_blank" class="profile-modal-link">🟣 Twitch</a>
+            <a href="https://www.youtube.com/@iamlazydanger"  target="_blank" class="profile-modal-link">🔴 YouTube</a>
+            <a href="https://www.instagram.com/iamlazydanger" target="_blank" class="profile-modal-link">📸 Instagram</a>
+            <a href="https://kick.com/iamlazydanger"          target="_blank" class="profile-modal-link">💜 Kick</a>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     JAVASCRIPT — all site logic lives below
+════════════════════════════════════════════════════════════════ -->
+<script>
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 21]  IMAGE LINKS CONFIG — paste your URLs here
+       ────────────────────────────────────────────────────────────
+       WHY: One single place to set every image URL so you don't have
+            to hunt through the HTML. Change a value here and it
+            updates everywhere on the page automatically.
+       HOW: Replace the placeholder strings with real URLs.
+            Leave a category image as "" to keep the default gradient + emoji.
+       CAN IMPROVE:
+         • Pull these URLs from a CMS or JSON file instead of hardcoding
+         • Add per-post image overrides in the posts array below
+    ════════════════════════════════════════════════════════════ */
+    var IMAGE_LINKS = {
+
+        /* Your profile picture — used in the header circle AND the profile modal */
+        profilePicture: "YOUR_PROFILE_PICTURE_URL_HERE",  /* 🔧 paste URL here */
+
+        /* Category card thumbnails — one image per category type.
+           Shown at the top of every card in that category.
+           Leave as "" to keep the default purple/blue gradient + emoji.  */
+        review:   "",  /* 🔧 e.g. "https://i.imgur.com/abc.jpg"   */
+        guide:    "",  /* 🔧 e.g. "https://i.imgur.com/def.jpg"   */
+        tips:     "",  /* 🔧 e.g. "https://i.imgur.com/ghi.jpg"   */
+        hardware: ""   /* 🔧 e.g. "https://i.imgur.com/jkl.jpg"   */
+    };
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 22]  BLOG POST DATA — add or edit posts here
+       ────────────────────────────────────────────────────────────
+       WHY: All post content lives in this array. To add a new post,
+            copy one of the objects below, paste it, and change the values.
+            To remove a post, delete its { … } block.
+       FIELDS:
+         id          — unique number (increment for each new post)
+         title       — headline shown on the card
+         description — short summary shown on the card
+         category    — must match one value in the categories array (JS 23)
+         emoji       — fallback icon shown if no category image is set
+         date        — display date (any format you like)
+         readTime    — estimated read time shown in the card footer
+         featured    — true = shown as the hero banner (only one should be true)
+         link        — URL the "Read →" button opens (use "#" for no link)
+       CAN IMPROVE:
+         • Add a "tags" array for finer filtering (e.g. ["AMD","CPU","Budget"])
+         • Add a "thumbnail" field to override the category image per post
+         • Add an "author" field if you add guest writers
+         • Load posts from an external JSON file or headless CMS API
+    ════════════════════════════════════════════════════════════ */
+    var posts = [
+        {
+            id: 1,
+            title: "Lazy Danger",
+            description: "Welcome to the streaming world! With a beginners setup and a gaming PC. Perfect for anyone starting their gaming journey!",
+            category: "Guide",
+            emoji: "🎬",
+            date: "March 1, 2000",
+            readTime: "8 min",
+            featured: true,
+            link: "#"
+        },
+        {
+            id: 2,
+            title: "MSI Gaming Motherboard X870 WiFi",
+            description: "The ultimate gaming motherboard for high-performance builds. Features PCIe 5.0 support, DDR5 memory compatibility, and built-in WiFi. Perfect for serious gamers and content creators.",
+            category: "Review",
+            emoji: "⚡",
+            date: "March 12, 2024",
+            readTime: "12 min",
+            featured: false,
+            link: "https://www.msi.com"
+        },
+        {
+            id: 3,
+            title: "Coco Sports RGB Keyboard & Mouse Set",
+            description: "Complete gaming peripherals with customizable RGB lighting, mechanical switches, and ergonomic design. Boost your gaming performance with professional-grade equipment.",
+            category: "Tips",
+            emoji: "⌨️",
+            date: "March 10, 2024",
+            readTime: "6 min",
+            featured: false,
+            link: "https://www.amazon.com"
+        },
+        {
+            id: 4,
+            title: "NVIDIA RTX 5060 Ti Graphics Card",
+            description: "Next-gen graphics power for high refresh rate gaming. Experience ray tracing, DLSS technology, and smooth gameplay at 1440p and beyond. Essential for modern gaming.",
+            category: "Guide",
+            emoji: "🎮",
+            date: "March 8, 2024",
+            readTime: "7 min",
+            featured: false,
+            link: "https://www.nvidia.com"
+        },
+        {
+            id: 5,
+            title: "AMD Ryzen 7 9800X3D Processor",
+            description: "The ultimate CPU for gaming. With 3D V-Cache technology, this processor delivers exceptional gaming performance and multitasking capabilities. Built for champions.",
+            category: "Hardware",
+            emoji: "🖥️",
+            date: "March 5, 2024",
+            readTime: "9 min",
+            featured: false,
+            link: "https://www.amd.com"
+        },
+        {
+            id: 6,
+            title: "Gaming PC Build Guide 2024",
+            description: "Complete breakdown of the best gaming PCs at every price point. From budget builds to high-end rigs, find the perfect setup for your gaming needs.",
+            category: "Hardware",
+            emoji: "💻",
+            date: "March 1, 2024",
+            readTime: "10 min",
+            featured: false,
+            link: "https://pcpartpicker.com"
+        }
+    ];
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 23]  CATEGORY LIST — controls the filter buttons
+       ────────────────────────────────────────────────────────────
+       WHY: This array drives the filter row above the blog grid.
+            "All" is always first; the rest match the category values
+            used in the posts array above.
+       CAN IMPROVE:
+         • Generate this list automatically from the posts array so
+           you never have to update it manually when adding categories
+         • Add icons next to each label (e.g. "⚡ Review")
+    ════════════════════════════════════════════════════════════ */
+    var categories    = ["All", "Review", "Guide", "Tips", "Hardware"];
+    var activeCategory = "All";   /* tracks which filter is selected */
+    var searchQuery    = "";      /* tracks the live search text      */
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 24]  getCategoryImage() — returns thumbnail URL for a category
+       ────────────────────────────────────────────────────────────
+       WHY: Helper that translates a category name (e.g. "Review") into
+            the URL stored in IMAGE_LINKS. Returns "" if not set, which
+            tells the card to show the gradient + emoji fallback instead.
+       CAN IMPROVE:
+         • Extend with a per-post override: check post.thumbnail first,
+           fall back to category image, then fall back to gradient
+    ════════════════════════════════════════════════════════════ */
+    function getCategoryImage(category) {
+        var map = {
+            "Review":   IMAGE_LINKS.review,
+            "Guide":    IMAGE_LINKS.guide,
+            "Tips":     IMAGE_LINKS.tips,
+            "Hardware": IMAGE_LINKS.hardware
+        };
+        return map[category] || "";
+    }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 25]  applyProfilePictures() — syncs profile pic everywhere
+       ────────────────────────────────────────────────────────────
+       WHY: The same picture needs to appear in two places: the header
+            circle and the profile modal. This function updates both
+            from IMAGE_LINKS.profilePicture in one go.
+            Called once on page load by start().
+       CAN IMPROVE:
+         • Add a third location (e.g. an "About the Author" footer section)
+    ════════════════════════════════════════════════════════════ */
+    function applyProfilePictures() {
+        if (IMAGE_LINKS.profilePicture && IMAGE_LINKS.profilePicture !== "YOUR_PROFILE_PICTURE_URL_HERE") {
+            var h = document.getElementById('headerProfileImg');
+            var m = document.getElementById('profileModalImg');
+            if (h) { h.src = IMAGE_LINKS.profilePicture; h.style.display = ''; }
+            if (m) { m.src = IMAGE_LINKS.profilePicture; m.style.display = ''; }
+        }
+    }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 26]  showFeatured() — renders the hero banner
+       ────────────────────────────────────────────────────────────
+       WHY: Finds the post with featured:true in the posts array and
+            builds the large two-column hero card at the top of the page.
+            Uses the category image if set, otherwise shows the emoji.
+       CAN IMPROVE:
+         • Rotate through multiple featured posts as a slideshow
+         • Add a "Watch the video" button linking to a YouTube video
+         • Display a read-progress bar on re-visit using localStorage
+    ════════════════════════════════════════════════════════════ */
+    function showFeatured() {
+        var featuredPost = null;
+        for (var i = 0; i < posts.length; i++) {
+            if (posts[i].featured === true) { featuredPost = posts[i]; break; }
+        }
+        if (featuredPost === null) return;
+
+        var imgUrl     = getCategoryImage(featuredPost.category);
+        var imageInner = imgUrl
+            ? '<img src="' + imgUrl + '" alt="' + featuredPost.title + '">'
+            : featuredPost.emoji;
+
+        var html = '<div class="featured-post">';
+        html += '<div class="featured-content">';
+        html += '<h1>' + featuredPost.title + '</h1>';
+        html += '<p>'  + featuredPost.description + '</p>';
+        html += '<div class="featured-meta">';
+        html += '<span class="category-badge">' + featuredPost.category + '</span>';
+        html += '<span class="meta-item">'       + featuredPost.date     + '</span>';
+        html += '<span class="meta-item">'       + featuredPost.readTime + ' read</span>';
+        html += '</div>';
+        html += '<a class="read-more" onclick="showBioModal(); return false;" href="#">surprise info →</a>';
+        html += '</div>';
+        html += '<div class="featured-image">' + imageInner + '</div>';
+        html += '</div>';
+
+        document.getElementById('featuredSection').innerHTML = html;
+    }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 27]  showFilters() — renders the category filter buttons
+       ────────────────────────────────────────────────────────────
+       WHY: Loops through the categories array and creates a button for
+            each one. Adds the "active" class to the currently selected
+            button. Attaches click listeners that update activeCategory
+            then re-render the filters and posts.
+       CAN IMPROVE:
+         • Add smooth scroll to the grid when a filter is clicked
+         • Persist the selected filter in the URL (e.g. ?cat=Review)
+           so the page can be linked to directly
+    ════════════════════════════════════════════════════════════ */
+    function showFilters() {
+        var html = '';
+        for (var i = 0; i < categories.length; i++) {
+            var cat = categories[i];
+            var ac  = (cat === activeCategory) ? ' active' : '';
+            html += '<button class="filter-btn' + ac + '" data-category="' + cat + '">' + cat + '</button>';
+        }
+        document.getElementById('filtersContainer').innerHTML = html;
+
+        var buttons = document.querySelectorAll('.filter-btn');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('click', function() {
+                activeCategory = this.getAttribute('data-category');
+                showFilters();
+                showPosts();
+            });
+        }
+    }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 28]  showPosts() — renders the blog card grid
+       ────────────────────────────────────────────────────────────
+       WHY: Filters the posts array by the active category AND the
+            current search query, then builds and injects HTML cards.
+            Skips the featured post (it's already shown in the hero).
+            Shows the empty-state message if nothing matches.
+       CAN IMPROVE:
+         • Add pagination or "Load more" instead of showing all at once
+         • Add a sort option: Newest / Oldest / A–Z
+         • Highlight the matching search term inside the card text
+    ════════════════════════════════════════════════════════════ */
+    function showPosts() {
+        var filtered = [];
+        for (var i = 0; i < posts.length; i++) {
+            var post = posts[i];
+            if (post.featured === true) continue;
+
+            var categoryMatch = activeCategory === "All" || post.category === activeCategory;
+            var sl            = searchQuery.toLowerCase();
+            var searchMatch   = post.title.toLowerCase().indexOf(sl)       !== -1 ||
+                                post.description.toLowerCase().indexOf(sl) !== -1;
+
+            if (categoryMatch && searchMatch) filtered.push(post);
+        }
+
+        var gridEl  = document.getElementById('blogGrid');
+        var emptyEl = document.getElementById('emptyState');
+
+        if (filtered.length === 0) {
+            emptyEl.style.display = 'block';
+            gridEl.innerHTML = '';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+        var html = '';
+
+        for (var i = 0; i < filtered.length; i++) {
+            var post      = filtered[i];
+            var imgUrl    = getCategoryImage(post.category);
+            var cardInner = imgUrl
+                ? '<img src="' + imgUrl + '" alt="' + post.title + '">'
+                : post.emoji;
+
+            html += '<article class="blog-card">';
+            html += '<div class="card-image">' + cardInner + '</div>';
+            html += '<div class="card-content">';
+            html += '<div class="card-category">' + post.category + '</div>';
+            html += '<h2 class="card-title">'     + post.title    + '</h2>';
+            html += '<p class="card-description">' + post.description + '</p>';
+            html += '<div class="card-footer">';
+            html += '<span>' + post.date + '</span>';
+            html += '<a class="read-more" href="' + post.link + '" target="_blank">Read →</a>';
+            html += '</div>';
+            html += '</div>';
+            html += '</article>';
+        }
+
+        gridEl.innerHTML = html;
+    }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 29]  start() — page boot function
+       ────────────────────────────────────────────────────────────
+       WHY: Called once when the page loads. Runs all render functions
+            in the correct order and wires up the search input so posts
+            re-filter live as the visitor types.
+       CAN IMPROVE:
+         • Add a loading spinner that hides once start() completes
+         • Parse URL parameters here to pre-select a filter or search
+    ════════════════════════════════════════════════════════════ */
+    function start() {
+        applyProfilePictures();
+        showFeatured();
+        showFilters();
+        showPosts();
+
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            searchQuery = this.value;
+            showPosts();
+        });
+    }
+
+    start(); /* ← this runs everything on page load */
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 30]  BIO MODAL — show / close functions
+       ────────────────────────────────────════════════════════════
+       WHY: showBioModal() adds class "show" which switches the modal
+            from display:none to display:flex, making it visible.
+            closeBioModal() removes "show" to hide it again.
+            Triggered by "surprise info →" on the featured card.
+       CAN IMPROVE:
+         • Add a CSS fade-in animation by transitioning opacity
+         • Trap keyboard focus inside the modal for accessibility
+    ════════════════════════════════════════════════════════════ */
+    function showBioModal()  { document.getElementById('bioModal').className = 'modal show'; }
+    function closeBioModal() { document.getElementById('bioModal').className = 'modal'; }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 31]  PROFILE MODAL — show / close functions
+       ────────────────────────────────────────────────────────────
+       WHY: Same pattern as the bio modal — toggling the "show" class
+            on the profile-modal element to show or hide it.
+            Triggered by clicking the profile icon in the header.
+       CAN IMPROVE:
+         • Add a slide-up animation on mobile
+         • Close automatically after 30 seconds of inactivity
+    ════════════════════════════════════════════════════════════ */
+    function showProfileModal()  { document.getElementById('profileModal').className = 'profile-modal show'; }
+    function closeProfileModal() { document.getElementById('profileModal').className = 'profile-modal'; }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 32]  CHAT WIDGET — toggle, character count, send
+       ────────────────────────────────────────────────────────────
+       WHY: Three functions work together:
+         toggleChat()      opens/closes the message box above the bubble
+         updateCharCount() updates the "0 / 300" counter live as you type
+                           and turns it red at the limit
+         sendMessage()     validates the message, then sends it to
+                           dharmaraj.p2013@gmail.com using EmailJS
+       NOTE: EmailJS requires a free account at emailjs.com and three
+             values filled in: serviceId, templateId, publicKey.
+             Your email template must use {{from_name}}, {{message}},
+             and {{to_email}} as variables.
+       CAN IMPROVE:
+         • Add spam protection (rate limit: 1 message per 60 seconds)
+         • Show a countdown cooldown timer after sending
+         • Add an auto-reply confirmation email to the sender
+         • Add a topic/subject dropdown above the textarea
+    ════════════════════════════════════════════════════════════ */
+    function toggleChat() {
+        var box = document.getElementById('chatBox');
+        box.classList.toggle('open');
+        if (box.classList.contains('open')) {
+            /* Clear any leftover status message when re-opening */
+            document.getElementById('chatStatus').textContent = '';
+        }
+    }
+
+    function updateCharCount() {
+        var msg = document.getElementById('chatMessage').value;
+        var el  = document.getElementById('charCount');
+        var len = msg.length;
+        el.textContent = len + ' / 300';
+        el.className   = 'chat-char-count' + (len >= 300 ? ' over' : '');
+    }
+
+    function sendMessage() {
+        var name    = document.getElementById('chatName').value.trim();
+        var message = document.getElementById('chatMessage').value.trim();
+        var status  = document.getElementById('chatStatus');
+        var btn     = document.getElementById('chatSendBtn');
+
+        /* Basic validation — message must not be empty */
+        if (!message) {
+            status.style.color = '#ff4d4d';
+            status.textContent = 'Please type a message first.';
+            return;
+        }
+
+        btn.disabled = true;
+        status.style.color = 'var(--accent-cyan)';
+        status.textContent = 'Sending…';
+
+        /* ── EmailJS credentials ──────────────────────────────────
+           Sign up free at https://www.emailjs.com then fill in:
+             serviceId  → Email Services tab → your service ID
+             templateId → Email Templates tab → your template ID
+             publicKey  → Account → Public Key
+           Template must have variables: {{from_name}} {{message}} {{to_email}}
+        ─────────────────────────────────────────────────────── */
+        var serviceId  = "YOUR_EMAILJS_SERVICE_ID";   /* 🔧 e.g. "service_abc123"     */
+        var templateId = "YOUR_EMAILJS_TEMPLATE_ID";  /* 🔧 e.g. "template_xyz789"    */
+        var publicKey  = "YOUR_EMAILJS_PUBLIC_KEY";   /* 🔧 e.g. "AbCdEfGhIjKlMnOp"  */
+
+        var templateParams = {
+            from_name: name || "Anonymous Gamer",
+            message:   message,
+            to_email:  "dharmaraj.p2013@gmail.com"
+        };
+
+        /* Lazily load EmailJS only when the user actually sends — keeps page load fast */
+        function doSend() {
+            emailjs.send(serviceId, templateId, templateParams, publicKey)
+                .then(function() {
+                    status.style.color = 'var(--accent-cyan)';
+                    status.textContent = '✅ Message sent! Thanks for reaching out.';
+                    document.getElementById('chatMessage').value = '';
+                    document.getElementById('chatName').value    = '';
+                    document.getElementById('charCount').textContent = '0 / 300';
+                    btn.disabled = false;
+                })
+                .catch(function(err) {
+                    status.style.color = '#ff4d4d';
+                    status.textContent = '❌ Could not send. Check EmailJS setup.';
+                    console.error('EmailJS error:', err);
+                    btn.disabled = false;
+                });
+        }
+
+        if (typeof emailjs === 'undefined') {
+            var script    = document.createElement('script');
+            script.src    = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+            script.onload = function() { doSend(); };
+            script.onerror = function() {
+                status.style.color = '#ff4d4d';
+                status.textContent = '❌ Could not load email service.';
+                btn.disabled = false;
+            };
+            document.head.appendChild(script);
+        } else {
+            doSend();
+        }
+    }
+
+
+    /* ════════════════════════════════════════════════════════════
+       [JS 33]  BACKDROP CLICK — closes any open modal on outside click
+       ────────────────────────────────────────────────────────────
+       WHY: Standard UX pattern — clicking the dark dimmed area behind
+            a modal should close it without needing to find the × button.
+       CAN IMPROVE:
+         • Also close on Escape key press (add a keydown listener)
+         • Also close the chat box if the user clicks outside it
+    ════════════════════════════════════════════════════════════ */
+    window.addEventListener('click', function(e) {
+        var bioModal  = document.getElementById('bioModal');
+        var profModal = document.getElementById('profileModal');
+        if (e.target === bioModal)  bioModal.className  = 'modal';
+        if (e.target === profModal) profModal.className = 'profile-modal';
+    });
+
+</script>
+</body>
+</html>
