@@ -42,20 +42,23 @@
      • Add page transition history tracking
 ════════════════════════════════════════════════════════════════ */
 let arrowClicks = 0;
-let currentPage = 1;
+let currentPage = 0; // Default to index 0 (index.html)
 
-/* Detect which page we're on based on URL */
-if (window.location.pathname.includes('page2')) {
+/* Dynamically detect which index of the sequence we are currently on */
+const currentPath = window.location.pathname;
+if (currentPath.includes('page1.html')) {
+    currentPage = 1;
+} else if (currentPath.includes('page2.html')) {
     currentPage = 2;
-} else if (window.location.pathname.includes('page3')) {
+} else if (currentPath.includes('page3.html')) {
     currentPage = 3;
 }
 
 const pageSequence = [
-  "index.html",  // New Page 1
-  "page1.html",  // Page 2 (Spider Cursor)
-  "page2.html",  // Page 3 (Galaxy)
-  "page3.html"   // Page 4 (Spider Clock)
+    "index.html",         // Index 0
+    "page1.html",         // Index 1
+    "page2.html",         // Index 2
+    "page3.html"          // Index 3
 ];
 
 
