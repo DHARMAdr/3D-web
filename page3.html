@@ -39,13 +39,14 @@
             letter-spacing: 3px;
         }
 
-   .clock-label {
+ .clock-label {
     font-size: 1.2rem;
     position: absolute;
-    top: -40px; /* 👈 This pushes the text completely ABOVE the numbers */
+    bottom: 100%; /* 👈 Pushes the bottom of the label to sit exactly on top of the timer */
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
+    margin-bottom: 15px; /* 👈 Adds a clean gap between the label and the numbers */
+    white-space: nowrap; /* 👈 Keeps the text on a single line */
     opacity: 0.8;
 }
     </style>
