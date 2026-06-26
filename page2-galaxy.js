@@ -93,7 +93,7 @@ function createGalaxy() {
     ──────────────────────── */
     galaxyGeometry = new THREE.BufferGeometry();
 
-    const particleCount = 1000;
+    const particleCount = 10000;
     const positions = new Float32Array(particleCount * 3);
 
     /* ── GENERATE SPIRAL PATTERN ──
@@ -126,7 +126,7 @@ function createGalaxy() {
        sizeAttenuation: particles get smaller when far away
     ────────────────────── */
     const material = new THREE.PointsMaterial({
-        color: 0xffffff,         /* White particles */
+        color: 0x00ffff,         /* cyan particles */
         size: 0.1,
         sizeAttenuation: true
     });
