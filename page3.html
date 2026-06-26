@@ -21,16 +21,16 @@
             background-color: #0a0a0a;  /* Vantablack — almost no light reflection */
         }
 
-        .clock-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #8B0000;
-            font-family: 'Arial', sans-serif;
-            pointer-events: none;
-        }
+      .clock-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #8B0000;
+    font-family: 'Arial', sans-serif;
+    pointer-events: none;
+}
 
         .clock-time {
             font-size: 4rem;
@@ -39,14 +39,15 @@
             letter-spacing: 3px;
         }
 
- .clock-label {
-    font-size: 1.2rem;
+ #clock h1 {
+    font-size: 1.5rem !important;
     position: absolute;
-    bottom: 100%; /* 👈 Pushes the bottom of the label to sit exactly on top of the timer */
+    bottom: 100%; /* Pushes it completely ABOVE the moving timer digits */
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 15px; /* 👈 Adds a clean gap between the label and the numbers */
-    white-space: nowrap; /* 👈 Keeps the text on a single line */
+    width: 100%;
+    margin: 0 0 20px 0; /* Creates a clean gap above the numbers */
+    white-space: nowrap;
     opacity: 0.8;
 }
     </style>
