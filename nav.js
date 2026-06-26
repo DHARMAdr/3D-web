@@ -41,25 +41,31 @@
      • Store in localStorage to persist across page refreshes
      • Add page transition history tracking
 ════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ 
+[JS 1]  NAVIGATION STATE — Track current page and arrow clicks 
+════════════════════════════════════════════════════════════════ */
 let arrowClicks = 0;
-let currentPage = 0; // Default to index 0 (index.html)
-
-/* Dynamically detect which index of the sequence we are currently on */
-const currentPath = window.location.pathname;
-if (currentPath.includes('page1.html')) {
-    currentPage = 1;
-} else if (currentPath.includes('page2.html')) {
-    currentPage = 2;
-} else if (currentPath.includes('page3.html')) {
-    currentPage = 3;
-}
+let currentPage = 0; // Default to 0 (index.html)
 
 const pageSequence = [
-    "index.html",         // Index 0
-    "page1.html",         // Index 1
-    "page2.html",         // Index 2
-    "page3.html"          // Index 3
+    "index.html", // Index 0
+    "page1.html", // Index 1
+    "page2.html", // Index 2
+    "page3.html"  // Index 3
 ];
+
+/* Strictly detect which page we are currently looking at */
+const currentPath = window.location.pathname;
+
+if (currentPath.endsWith("page1.html")) {
+    currentPage = 1;
+} else if (currentPath.endsWith("page2.html")) {
+    currentPage = 2;
+} else if (currentPath.endsWith("page3.html")) {
+    currentPage = 3;
+} else {
+    currentPage = 0; // If it's "/" or "index.html", we are at the start
+}
 
 
 /* ════════════════════════════════════════════════════════════════
@@ -133,29 +139,29 @@ function updateArrowCounter() {
      • Add history tracking for back button support
 ================================ ============================ */
 function advancePage() {
-    /* Check if there's a next page */
-    if (currentPage < pageSequence.length) { 
-        const nextPageUrl = pageSequence[currentPage];
+    /* Determine what the NEXT page index should be */
+    const nextPageIndex = currentPage + 1;
+
+    /* Check if there's actually a next page available in our array sequence */
+    if (nextPageIndex < pageSequence.length) { 
+        const nextPageUrl = pageSequence[nextPageIndex];
         
-        /* Reset counter for new page */
-        arrowClicks = 0;
-        currentPage++;
+        arrowClicks = 0; // Reset click count
         
-        /* Add fade-out effect before transition */
+        /* Apply smooth transition fade-out */
         document.body.style.transition = 'opacity 0.5s ease';
         document.body.style.opacity = '0';
         
-        /* Navigate after fade completes */
+        /* Redirect after the fade animation completes */
         setTimeout(() => {
             window.location.href = nextPageUrl;
         }, 500);
     } else {
-        /* Already on final page — loop back to start */
+        /* Loops back to index.html if they click past the final page */
         alert('🕷️ You have completed the portal! Returning to start...');
         window.location.href = pageSequence[0]; 
     }
 }
-
 /* ════════════════════════════════════════════════════════════════
    [JS 5]  PROFILE MODAL TOGGLE — Show/hide on icon click
    ────────────────────────────────────────────────────────────────
