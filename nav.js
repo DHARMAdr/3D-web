@@ -51,10 +51,11 @@ if (window.location.pathname.includes('page2')) {
     currentPage = 3;
 }
 
-const pages = [
-    'index.html',     /* Page 1 */
-    'page2.html',     /* Page 2 */
-    'page3.html'      /* Page 3 */
+const pageSequence = [
+  "index.html",  // New Page 1
+  "page1.html",  // Page 2 (Spider Cursor)
+  "page2.html",  // Page 3 (Galaxy)
+  "page3.html"   // Page 4 (Spider Clock)
 ];
 
 
